@@ -103,7 +103,7 @@ exports.UpdateUser = asyncHandler(async (req, res, next) => {
         const imagePath = req.file.path
         const userImage = fs.readFileSync(imagePath)
         let data = await uploadToS3(userImage);
-        const user = await User.findByIdAndUpdate(req.user.id, { imgpath: data, name,email,bio,url })
+        const user = await User.findByIdAndUpdate(req.user.id, { imgpath: data,name,email,bio,url })
        return res.status(201).json({
             success: true,
             user
@@ -116,23 +116,24 @@ exports.UpdateUser = asyncHandler(async (req, res, next) => {
             user
         })
     }
-
-  
 })
+
+//update Avatar
 
 
 exports.updateavatar = asyncHandler(async (req, res, next) => {
     if (!req.file) {
         return next(new ErrorHandler("Select The Avatar Image", 401))
     }
-    const imagePath = req.file.path
+        const imagePath = req.file.path
     const userAvatar = fs.readFileSync(imagePath)
     let data = await uploadToS3(userAvatar);
-    const user = await User.findByIdAndUpdate(req.user.id, { avatarurl: data })
+    const user = await User.findByIdAndUpdate(req.user.id, { coverimg: data })
     res.status(201).json({
         success: true
     })
 })
+
 
 //get login user Profile
 
@@ -144,6 +145,9 @@ exports.Myprofile = asyncHandler(async (req, res, next) => {
         user
     })
 })
+
+
+
 
 // logout user
 exports.Userlogout = asyncHandler((req, res) => {
