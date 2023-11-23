@@ -9,6 +9,7 @@ const multer=require("multer")
 const path=require("path");
 const fs=require("fs")
 const app=express()
+const collectionRouter=require("./router/collectionRouter")
 
 // middleware
 app.use(cookieparser())
@@ -19,6 +20,7 @@ app.use(cors({
 }));
 app.use(express.json())
 app.use(userRouter)
+app.use(collectionRouter)
 
 
 // connet mongoDb

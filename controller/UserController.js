@@ -66,7 +66,6 @@ exports.CheckUser = asyncHandler(async (req, res, next) => {
     const { nonce, signature, userid } = req.body;
     try {
         const updatedUser = await User.findOne({ $and: [{ 'nonce': nonce }, { 'userid': userid }] })
-        console.log(updatedUser);
         if (!updatedUser) {
             return next(new ErrorHandler("User not found", 401))
         }
@@ -76,8 +75,7 @@ exports.CheckUser = asyncHandler(async (req, res, next) => {
             data: msgBufferHex,
             sig: signature,
         });
-        console.log(address.toLowerCase());
-        console.log(userid.toLowerCase());
+
         if (address.toLowerCase() === userid.toLowerCase()) {
             createJwt(res, updatedUser)
         } else {
@@ -96,9 +94,7 @@ exports.CheckUser = asyncHandler(async (req, res, next) => {
 // update user
 
 exports.UpdateUser = asyncHandler(async (req, res, next) => {
-    console.log(req.body);
     const {name,email,bio,url}=req.body
-   console.log(req.file);
        if (req.file) {
         const imagePath = req.file.path
         const userImage = fs.readFileSync(imagePath)
@@ -122,6 +118,7 @@ exports.UpdateUser = asyncHandler(async (req, res, next) => {
 
 
 exports.updateavatar = asyncHandler(async (req, res, next) => {
+    
     if (!req.file) {
         return next(new ErrorHandler("Select The Avatar Image", 401))
     }
