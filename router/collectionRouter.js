@@ -1,5 +1,5 @@
 const express=require("express");
-const { CreateCollection } = require("../controller/collectionController");
+const { CreateCollection, GetLoginUserCollection } = require("../controller/collectionController");
 const jwtVerification = require("../middleware/jwtVerification");
 const upload = require("../utils/fileUpload");
 
@@ -7,5 +7,6 @@ const upload = require("../utils/fileUpload");
 const router = express.Router();
 
 router.post("/new-collection",jwtVerification,upload.single("image"),CreateCollection)
+router.get("/login-user-collection/:id",jwtVerification,GetLoginUserCollection)
 
-module.exports =router
+module.exports = router
