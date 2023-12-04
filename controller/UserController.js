@@ -87,7 +87,7 @@ exports.CheckUser = asyncHandler(async (req, res, next) => {
         updatedUser.nonce = Math.floor(Math.random() * 1000000).toString();
         await updatedUser.save();
     } catch (error) {
-        console.log(error);
+        console.log(error); 
     }
 })
 
