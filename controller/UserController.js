@@ -48,7 +48,7 @@ exports.CreateNonce = async (req, res, next) => {
                 user
             })
         } else {
-            const existUser = await User.findOneAndUpdate({nonce, new: true })
+            const existUser = await User.findOneAndUpdate({ nonce, new: true })
             const user = await User.findOne({ userid })
             return res.json({
                 user
@@ -94,19 +94,19 @@ exports.CheckUser = asyncHandler(async (req, res, next) => {
 // update user
 
 exports.UpdateUser = asyncHandler(async (req, res, next) => {
-    const {name,email,bio,url}=req.body
-       if (req.file) {
+    const { name, email, bio, url } = req.body
+    if (req.file) {
         const imagePath = req.file.path
         const userImage = fs.readFileSync(imagePath)
         let data = await uploadToS3(userImage);
-        const user = await User.findByIdAndUpdate(req.user.id, { imgpath: data,name,email,bio,url })
-       return res.status(201).json({
+        const user = await User.findByIdAndUpdate(req.user.id, { imgpath: data, name, email, bio, url })
+        return res.status(201).json({
             success: true,
             user
         })
-    }else{
+    } else {
 
-        const user = await User.findByIdAndUpdate(req.user.id, { name,email,bio,url })
+        const user = await User.findByIdAndUpdate(req.user.id, { name, email, bio, url })
         res.status(201).json({
             success: true,
             user
@@ -116,13 +116,12 @@ exports.UpdateUser = asyncHandler(async (req, res, next) => {
 
 //update Avatar
 
-
 exports.updateavatar = asyncHandler(async (req, res, next) => {
-    
+
     if (!req.file) {
         return next(new ErrorHandler("Select The Avatar Image", 401))
     }
-        const imagePath = req.file.path
+    const imagePath = req.file.path
     const userAvatar = fs.readFileSync(imagePath)
     let data = await uploadToS3(userAvatar);
     const user = await User.findByIdAndUpdate(req.user.id, { coverimg: data })
@@ -130,7 +129,6 @@ exports.updateavatar = asyncHandler(async (req, res, next) => {
         success: true
     })
 })
-
 
 //get login user Profile
 
@@ -147,10 +145,39 @@ exports.Myprofile = asyncHandler(async (req, res, next) => {
 
 
 // logout user
-exports.Userlogout = asyncHandler((req, res) => {
+exports.Userlogout = asyncHandler(async (req, res) => {
     res.clearCookie('token').json({
         success: true,
         message: "logout successfully"
     })
 
+})
+// get all user
+exports.getAllUser = asyncHandler(async (req, res) => {
+
+    const allUser = await User.find({})
+    console.log(allUser);
+    res.status(200).json({
+        message: "success",
+        allUser
+    })
+})
+exports.getWhistlistAllUser = asyncHandler(async (req, res) => {
+
+    const allUser = await User.find({ whiteListUser: true })
+    console.log(allUser);
+    res.status(200).json({
+        message: "success",
+        allUser
+    })
+})
+exports.ChangeTowhiteListUser = asyncHandler(async (req, res) => {
+    const { user } = req.body
+    const updateuser = user.map(async (userid) => {
+        const user = await User.findOneAndUpdate({ userid }, { whiteListUser: true },
+            { new: true })
+    })
+    res.status(201).json({
+        message: "success",
+    })
 })

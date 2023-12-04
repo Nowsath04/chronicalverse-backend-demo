@@ -11,7 +11,8 @@ const fs=require("fs")
 const app=express()
 const collectionRouter=require("./router/collectionRouter")
 const singleCollectionRouter = require("./router/singleCollectionRouter")
-
+const auctionRouter = require("./router/autionRouter")
+const directSaleRouter = require("./router/singOrderRouter")
 // middleware
 app.use(cookieparser())
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +24,8 @@ app.use(express.json())
 app.use(userRouter)
 app.use(collectionRouter)
 app.use(singleCollectionRouter)
-
+app.use(auctionRouter)
+app.use(directSaleRouter)
 
 // connet mongoDb
 

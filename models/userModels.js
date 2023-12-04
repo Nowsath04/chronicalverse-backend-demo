@@ -34,6 +34,10 @@ const UserShema = mongoose.Schema({
     trim: true,
     default: null,
   },
+  whiteListUser:{
+    type:Boolean,
+    default:false
+  }
 },
   {
     timestamps: true,

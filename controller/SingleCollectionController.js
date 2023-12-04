@@ -31,7 +31,7 @@ const uploadToS3 = (fileData) => {
 };
 
 exports.nftDataController = asyncHandler(async (req, res, next) => {
-    const {collection_id,nft_token,nft_name,nft_owner,image_hash,nfthashvalue,nft_date,nft_description,nft_additionalDetails,nft_itemsdetails,nft_creator} = req.body
+    const {collection_id,nft_token,nft_name,nft_owner,image_hash,nfthashvalue,nft_date,nft_description,nft_additionalDetails,nft_itemsdetails,nft_creator,pathname,type} = req.body
     const imagePath = req.file.path
     const userImage = fs.readFileSync(imagePath)
     let data = await uploadToS3(userImage);
@@ -42,23 +42,14 @@ exports.nftDataController = asyncHandler(async (req, res, next) => {
         nft_name:nft_name,
         nft_owner:nft_owner,
         imgIpfsValue:image_hash,
-        nfthashvalue:nfthashvalue,
+        nftIpfsValue:nfthashvalue,
         nft_date:nft_date,
         nft_description:nft_description,
         nft_additionalDetails:nft_additionalDetails,
         nft_itemsdetails:nft_itemsdetails,
         nft_creator:nft_creator,        
         image:data,
+        pathname:pathname,
+        type:type
     })
-
-//     if(!userid){
-//         return next(new ErrorHandler("user are unauthorization", 401))
-//     }
-// const SingleCollection = await singleCollectionModel.create(req.body)
-// console.log(req.body);
-
-// res.status(200).json({
-//     message:"success",
-//     SingleCollection
-// })
 })
