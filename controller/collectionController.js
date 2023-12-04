@@ -1,6 +1,33 @@
 const asyncHandler = require("../middleware/trycatch");
 const collectionModel = require("../models/collectionModel");
 const ErrorHandler = require("../utils/ErrorHandler");
+const AWS = require("aws-sdk")
+const fs = require("fs");
+
+const bucketName = process.env.aws_bucket;
+const awsConfig = ({
+    accessKeyId: process.env.AccessKey,
+    secretAccessKey: process.env.SecretKey,
+    region: process.env.region,
+})
+
+const S3 = new AWS.S3(awsConfig);
+const uploadToS3 = (fileData) => {
+    return new Promise((resolve, reject) => {
+        const params = {
+            Bucket: bucketName,
+            Key: `${Date.now().toString()}.jpg`,
+            Body: fileData,
+        };
+        S3.upload(params, (err, data) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(data.Location);
+        });
+    });
+};
+
 
 exports.CreateCollection = asyncHandler(async (req, res, next) => {
     const userid = req.user._id;
@@ -23,3 +50,17 @@ exports.GetLoginUserCollection = asyncHandler(async (req, res, next) => {
         collection
     })
 })
+
+exports.ConvertToUrl =async(req,res)=>{
+    const imagePath = req.file.path
+    const userImage = fs.readFileSync(imagePath)
+  try {
+    let data = await uploadToS3(userImage);
+    res.json({
+        data
+    })
+    console.log(data);
+  } catch (error) {
+    error
+  }
+}

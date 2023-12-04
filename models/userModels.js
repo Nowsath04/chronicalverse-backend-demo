@@ -36,7 +36,11 @@ const UserShema = mongoose.Schema({
   },
   whiteListUser:{
     type:Boolean,
+<<<<<<< HEAD
     default: false,
+=======
+    default:false
+>>>>>>> 5519bd37364ce0ad6722083867bcc030939350a3
   }
 },
   {
