@@ -37,8 +37,6 @@ const UserShema = mongoose.Schema({
   whiteListUser:{
     type:Boolean,
     default: false,
-
-
   }
 },
   {

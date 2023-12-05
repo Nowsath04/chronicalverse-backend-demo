@@ -35,6 +35,7 @@ exports.nftDataController = asyncHandler(async (req, res, next) => {
     const imagePath = req.file.path
     const userImage = fs.readFileSync(imagePath)
     let data = await uploadToS3(userImage);
+
     const nftData = await nftSchemaModel.create({
         collection_id: collection_id,
         nfttoken: nft_token,
@@ -51,27 +52,35 @@ exports.nftDataController = asyncHandler(async (req, res, next) => {
         pathname: pathname,
         type: type
     })
-    res.status(200).json({
-        message: "success",
-        nftData
-    })
+    console.log(nftData);
 })
 
-// update nft
-
-exports.UpdateNft = asyncHandler(async (req, res) => {
-    const nfttoken = req.params.tokenid; 
-    const collection_id = req.params.collectionId;
-    const updateNft = await nftSchemaModel.findOneAndUpdate(
-        { nfttoken, collection_id },
-        req.body,
-        { new: true, runValidators: true } 
-    );
-    console.log(updateNft);
-    if (!updateNft) {
-        return res.status(404).json({ success: false, error: 'NFT not found' });
+exports.nftAllData = asyncHandler(async (req, res, next) => {
+    try {
+        const allData = await nftSchemaModel.find();
+        res.status(200).json({ data: allData });
+    } catch (error) {
+        console.error("Error fetching all data:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
+});
 
-    res.status(200).json({ success: true, data: updateNft });
 
-})
+exports.getUserNFT = async (req, res) => {
+
+    const  { id ,token,collectionId } = req.params
+    try {
+        const data = await nftSchemaModel.findOne({
+            nftIpfsValue:id,
+            nfttoken:token,   
+            collection_id:collectionId
+        });
+        console.log(data);
+        res.status(200).json({message:"success", data });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
