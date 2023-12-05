@@ -69,6 +69,7 @@ exports.nftAllData = asyncHandler(async (req, res, next) => {
 exports.getUserNFT = async (req, res) => {
 
     const  { id ,token,collectionId } = req.params
+    console.log(id, token, collectionId);
     try {
         const data = await nftSchemaModel.findOne({
             nftIpfsValue:id,
