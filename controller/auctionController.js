@@ -30,17 +30,28 @@ const uploadToS3 = (fileData) => {
 
 exports.saveAuction = asyncHandler(async (req, res) => {
 
-    const {creater,endTime,pathname,collectionName,ipfsImage,auctionPrice,auctionId}=req.body
+    const { creater, endTime, pathname, collectionName, ipfsImage, auctionPrice, auctionId } = req.body
 
     const imagePath = req.file.path
     const userImage = fs.readFileSync(imagePath)
     let data = await uploadToS3(userImage);
 
-            var draft = await AuctionModel.create({creater,endTime,pathname,collectionName,ipfsImage,auctionPrice,auctionId,image:data})
-            res.json({
-                draft,
-                message: "valid token",
-            })
-
-            console.log(error)
+    var draft = await AuctionModel.create({ creater, endTime, pathname, collectionName, ipfsImage, auctionPrice, auctionId, image: data })
+    res.json({
+        draft,
+        message: "valid token",
     })
+
+    console.log(error)
+})
+
+
+exports.getAuction = asyncHandler(
+    async (req, res) => {
+        var draft = await AuctionModel.find({}).populate('creater')
+        res.json({
+            message: "draft loaded",
+            draft
+        })
+    }
+)

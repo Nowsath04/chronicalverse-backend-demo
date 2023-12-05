@@ -31,25 +31,47 @@ const uploadToS3 = (fileData) => {
 };
 
 exports.nftDataController = asyncHandler(async (req, res, next) => {
-    const {collection_id,nft_token,nft_name,nft_owner,image_hash,nfthashvalue,nft_date,nft_description,nft_additionalDetails,nft_itemsdetails,nft_creator,pathname,type} = req.body
+    const { collection_id, nft_token, nft_name, nft_owner, image_hash, nfthashvalue, nft_date, nft_description, nft_additionalDetails, nft_itemsdetails, nft_creator, pathname, type } = req.body
     const imagePath = req.file.path
     const userImage = fs.readFileSync(imagePath)
     let data = await uploadToS3(userImage);
-
     const nftData = await nftSchemaModel.create({
-        collection_id:collection_id,
-        nfttoken:nft_token,
-        nft_name:nft_name,
-        nft_owner:nft_owner,
-        imgIpfsValue:image_hash,
-        nftIpfsValue:nfthashvalue,
-        nft_date:nft_date,
-        nft_description:nft_description,
-        nft_additionalDetails:nft_additionalDetails,
-        nft_itemsdetails:nft_itemsdetails,
-        nft_creator:nft_creator,        
-        image:data,
-        pathname:pathname,
-        type:type
+        collection_id: collection_id,
+        nfttoken: nft_token,
+        nft_name: nft_name,
+        nft_owner: nft_owner,
+        imgIpfsValue: image_hash,
+        nftIpfsValue: nfthashvalue,
+        nft_date: nft_date,
+        nft_description: nft_description,
+        nft_additionalDetails: nft_additionalDetails,
+        nft_itemsdetails: nft_itemsdetails,
+        nft_creator: nft_creator,
+        image: data,
+        pathname: pathname,
+        type: type
     })
+    res.status(200).json({
+        message: "success",
+        nftData
+    })
+})
+
+// update nft
+
+exports.UpdateNft = asyncHandler(async (req, res) => {
+    const nfttoken = req.params.tokenid; 
+    const collection_id = req.params.collectionId;
+    const updateNft = await nftSchemaModel.findOneAndUpdate(
+        { nfttoken, collection_id },
+        req.body,
+        { new: true, runValidators: true } 
+    );
+    console.log(updateNft);
+    if (!updateNft) {
+        return res.status(404).json({ success: false, error: 'NFT not found' });
+    }
+
+    res.status(200).json({ success: true, data: updateNft });
+
 })
