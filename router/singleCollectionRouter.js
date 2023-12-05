@@ -10,7 +10,7 @@ const router = express.Router()
 router.post("/new-single-collection",jwtVerification,upload.single("image"),nftDataController)
 router.post("/update-nft/:tokenid/:collectionId",UpdateNft)
 
-// router.get("/nft-all-data",nftAllData)
-// router.get("/getnft/:id/:token/:collectionId",getUserNFT)
+router.get("/nft-all-data",nftAllData)
+router.get("/getnft/:id/:token/:collectionId",getUserNFT)
 
 module.exports = router

@@ -56,6 +56,34 @@ exports.nftDataController = asyncHandler(async (req, res, next) => {
         nftData
     })
 })
+exports.nftAllData = asyncHandler(async (req, res, next) => {
+    try {
+        const allData = await nftSchemaModel.find();
+        res.status(200).json({ data: allData });
+    } catch (error) {
+        console.error("Error fetching all data:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
+exports.getUserNFT = async (req, res) => {
+
+    const  { id ,token,collectionId } = req.params
+    console.log(id, token, collectionId);
+    try {
+        const data = await nftSchemaModel.findOne({
+            nftIpfsValue:id,
+            nfttoken:token,   
+            collection_id:collectionId
+        });
+        console.log(data);
+        res.status(200).json({message:"success", data });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 // update nft
 
