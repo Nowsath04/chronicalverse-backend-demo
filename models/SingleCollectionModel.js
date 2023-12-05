@@ -49,7 +49,7 @@ const nftSchema = mongoose.Schema({
         default: 0,
         type: Number
     },
-    collection_id : {
+    collection_id: {
         type: String,
     },
     pathname: {
@@ -64,7 +64,6 @@ const nftSchema = mongoose.Schema({
         type: String,
         default: "0"
     },
-    
     type: {
         type: String,
         required: true
@@ -79,6 +78,10 @@ const nftSchema = mongoose.Schema({
         ref: 'User',
         default: null,
         select: false,
+    },
+    nftOnsale: {
+        type: Boolean,
+        default:false
     },
     favourites: [
         {
