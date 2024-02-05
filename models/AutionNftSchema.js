@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const AuctionToken = mongoose.Schema({
+const AuctionToken =new mongoose.Schema({
     collectionName: {
         type: String,
     },
@@ -22,6 +22,9 @@ const AuctionToken = mongoose.Schema({
     type: {
         type: String,
     },
+    description:{
+        type: String,
+    },
     created_at: { type: Date, required: true, default: Date.now },
     creater: {
         type: mongoose.Schema.Types.ObjectId,
@@ -30,7 +33,18 @@ const AuctionToken = mongoose.Schema({
     },
     auctionId: {
         type: String,
+    },
+    collectionId:{
+        type: String,
+    },
+    tokenId:{
+        type: String,
+    },
+    removeAuction:{
+        type:Boolean,
+        default:false
     }
+
 });
 
 const AuctionModel = mongoose.model("auctionToken", AuctionToken);

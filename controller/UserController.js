@@ -7,6 +7,9 @@ const AWS = require("aws-sdk")
 const fs = require("fs");
 const ErrorHandler = require("../utils/ErrorHandler");
 const asyncHandler = require("../middleware/trycatch");
+const Users = require("../models/userModels");
+const contactUsModel = require("../models/contactUs");
+const reportModel = require("../models/report");
 
 const bucketName = process.env.aws_bucket;
 const awsConfig = ({
@@ -87,7 +90,7 @@ exports.CheckUser = asyncHandler(async (req, res, next) => {
         updatedUser.nonce = Math.floor(Math.random() * 1000000).toString();
         await updatedUser.save();
     } catch (error) {
-        console.log(error); 
+        console.log(error);
     }
 })
 
@@ -156,7 +159,6 @@ exports.Userlogout = asyncHandler(async (req, res) => {
 exports.getAllUser = asyncHandler(async (req, res) => {
 
     const allUser = await User.find({})
-    console.log(allUser);
     res.status(200).json({
         message: "success",
         allUser
@@ -165,7 +167,6 @@ exports.getAllUser = asyncHandler(async (req, res) => {
 exports.getWhistlistAllUser = asyncHandler(async (req, res) => {
 
     const allUser = await User.find({ whiteListUser: true })
-    console.log(allUser);
     res.status(200).json({
         message: "success",
         allUser
@@ -177,7 +178,139 @@ exports.ChangeTowhiteListUser = asyncHandler(async (req, res) => {
         const user = await User.findOneAndUpdate({ userid }, { whiteListUser: true },
             { new: true })
     })
+    console.log("hello");
     res.status(201).json({
         message: "success",
+    })
+})
+
+// get other user profile
+
+exports.GetOtherUserData = asyncHandler(async (req, res) => {
+    const { userid } = req.params
+    const user = await User.findOne({ userid })
+    res.status(201).json({
+        message: "success",
+        user
+    })
+})
+
+/// user followers
+
+exports.userFollowing = asyncHandler(async (req, res) => {
+    const { userid, followerid } = req.params
+    const user = await Users.findById(userid);
+    const followUser = await Users.findById(followerid);
+
+    if (!user || !followUser) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update following array for the current user
+    if (!user.following.includes(followerid)) {
+        user.following.push(followerid);
+        await user.save();
+    }
+
+    // Update followers array for the user being followed
+    if (!followUser.followers.includes(userid)) {
+        followUser.followers.push(userid);
+        await followUser.save();
+    }
+    res.status(200).json({ message: 'Successfully followed user' });
+})
+
+
+// unfollow user
+
+exports.UnFollowUser = asyncHandler(async (req, res) => {
+    const { userid, unfollowerid } = req.body
+
+    const user = await Users.findById(userid);
+    const unfollowUser = await Users.findById(unfollowerid); // Fix variable name here
+
+    if (!user || !unfollowUser) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Remove unfollowUserId from the following array of the current user
+    user.following = user.following.filter(id => id.toString() !== unfollowerid);
+    await user.save();
+
+
+    // Remove userId from the followers array of the user being unfollowed
+    unfollowUser.followers = unfollowUser.followers.filter(id => id.toString() !== userid);
+    await unfollowUser.save();
+
+    res.status(200).json({ message: 'Successfully unfollowed user' });
+
+})
+// get following data
+
+exports.getFollowing = asyncHandler(async (req, res) => {
+    const { userid } = req.params
+    const user = await Users.findById(userid).populate({
+        path: 'following',
+        select: 'name imgpath followers _id userid ', // Add fields you want to populate
+    });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ following: user.following });
+})
+
+// get followers
+exports.getFollowers = asyncHandler(async (req, res) => {
+
+    const { userid } = req.params;
+    const user = await Users.findById(userid).populate({
+        path: 'followers',
+        select: 'name imgpath followers _id userid', // Add fields you want to populate
+    });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ followers: user.followers });
+
+})
+
+
+
+// get user contact details
+
+exports.contactUsData = asyncHandler(async (req, res) => {
+    const { name, email, subject, message,category } = req.body
+    const contactUs = await contactUsModel.create(req.body)
+    res.status(200).json({
+        message: "Success"
+    })
+})
+
+// report function 
+exports.reportUser = asyncHandler(async (req, res) => {
+    const { user, content } = req.body
+    const report = await reportModel.create({ user, content })
+    res.status(200).json({
+        message: "success"
+    })
+})
+
+// find user is present or not 
+
+exports.FindUser = asyncHandler(async (req,res) => {
+    const { userid } = req.params;
+    const user = await User.findOne({ userid })
+    if (!user) {
+        return res.status(401).json({
+            message: "User Not Present"
+        })
+    }
+
+    res.status(201).json({
+        message: "success"
     })
 })

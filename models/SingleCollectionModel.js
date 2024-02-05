@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const nftSchema = mongoose.Schema({
+const nftSchema = new mongoose.Schema({
     nfttoken: {
         type: String,
         required: true
@@ -83,14 +83,6 @@ const nftSchema = mongoose.Schema({
         type: Boolean,
         default:false
     },
-    favourites: [
-        {
-            user: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Users',
-            },
-        },
-    ],
 }, {
     timestamps: true,
 })

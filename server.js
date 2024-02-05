@@ -13,9 +13,13 @@ const collectionRouter=require("./router/collectionRouter")
 const singleCollectionRouter = require("./router/singleCollectionRouter")
 const auctionRouter = require("./router/autionRouter")
 const directSaleRouter = require("./router/singOrderRouter")
+const bidRouter=require("./router/BidRouter")
+const notificationRouter=require("./router/notificatonRouter")
+const topArtists =require("./router/TopArtistsRouter")
+const recommendedNft=require("./router/recommendedNftRouter")
 // middleware
 app.use(cookieparser())
-app.use(express.urlencoded({ extended: true }));
+
 app.use(cors({
   origin: true,
   credentials: true
@@ -26,6 +30,10 @@ app.use(collectionRouter)
 app.use(singleCollectionRouter)
 app.use(auctionRouter)
 app.use(directSaleRouter)
+app.use(bidRouter)
+app.use(notificationRouter)
+app.use(topArtists)
+app.use(recommendedNft)
 
 // connet mongoDb
 

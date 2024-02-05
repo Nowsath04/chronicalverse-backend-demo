@@ -7,6 +7,7 @@ exports.SignOrderController = async (req, res, next) => {
     const { tokenId } = req.body;
     const { nftContract } = req.body;
     const { userAccount } = req.body;
+    const {deadline}=req.body
 
     const signData = {
         signature: signature,
@@ -14,6 +15,7 @@ exports.SignOrderController = async (req, res, next) => {
         tokenId: tokenId,
         nftContract: nftContract,
         userAccount: userAccount,
+        deadline:deadline
     }
 
     try {
@@ -34,6 +36,7 @@ exports.SignOrderController = async (req, res, next) => {
 
 
     } catch (error) {
+        console.log(error);
     }
 
 
@@ -50,8 +53,7 @@ exports.removeSignOrder = async (req, res) => {
 exports.loadSignOrder = async (req, res) => {
     let { token } = req.params
     let { nftContract } = req.params
-
-    let data = await SignOrder.findOne({ token: token, nftContract: nftContract });
+    let data = await SignOrder.findOne({ tokenId: token, nftContract: nftContract });
     res.json(data)
 
 }

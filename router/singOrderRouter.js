@@ -7,7 +7,6 @@ const {SignOrderController,loadSignOrder,removeSignOrder
 
  router.route("/sign-order").post(SignOrderController);
  router.route("/sign-order/:token/:nftContract").get(loadSignOrder);
- router.route("/sign-order/:token/:nftContract").get(loadSignOrder);
  router.route("/sign-order/:token/:nftContract").delete(removeSignOrder);
 
 module.exports = router;

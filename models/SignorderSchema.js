@@ -21,6 +21,9 @@ const SignOrder=mongoose.Schema({
    userAccount:{
       type:String,
       required:true
+     },
+     deadline:{
+      type:String,
      }
 })
 

@@ -37,7 +37,25 @@ const UserShema = mongoose.Schema({
   whiteListUser:{
     type:Boolean,
     default: false,
-  }
+  },
+  likednft:[
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "NftDatas",
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
+    },
+  ],
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
+    },
+  ],
 },
   {
     timestamps: true,

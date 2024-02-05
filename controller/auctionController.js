@@ -30,19 +30,18 @@ const uploadToS3 = (fileData) => {
 
 exports.saveAuction = asyncHandler(async (req, res) => {
 
-    const { creater, endTime, pathname, collectionName, ipfsImage, auctionPrice, auctionId } = req.body
+    const { creater, endTime, pathname, collectionName, ipfsImage, auctionPrice, auctionId, tokenId, collectionId,description } = req.body
 
     const imagePath = req.file.path
     const userImage = fs.readFileSync(imagePath)
     let data = await uploadToS3(userImage);
 
-    var draft = await AuctionModel.create({ creater, endTime, pathname, collectionName, ipfsImage, auctionPrice, auctionId, image: data })
+    var draft = await AuctionModel.create({ creater, endTime, pathname, collectionName, ipfsImage, auctionPrice, auctionId, image: data, collectionId, tokenId,description })
     res.json({
         draft,
         message: "valid token",
     })
 
-    console.log(error)
 })
 
 
@@ -55,3 +54,32 @@ exports.getAuction = asyncHandler(
         })
     }
 )
+
+
+exports.getParticularAuction = asyncHandler(async (req, res) => {
+    const { tokenid, collectionId } = req.params
+    var draft = await AuctionModel.findOne({ collectionId: collectionId, tokenId: tokenid })
+    res.json({
+        message: "Success",
+        draft
+    })
+}
+)
+
+exports.UpadteParticularAuction = asyncHandler(async (req, res) => {
+    const { tokenid, collectionId,auctionPrice } = req.params
+    var draft = await AuctionModel.findOneAndUpdate({ collectionId: collectionId, tokenId: tokenid },{auctionPrice:auctionPrice})
+    res.json({
+        message: "Success",
+
+    })
+}
+)
+
+exports.DeleateParticularAuction =asyncHandler(async(req,res)=>{
+    const { tokenid, collectionId } = req.params
+    const deleteAuction=await AuctionModel.findOneAndDelete({ collectionId: collectionId, tokenId: tokenid })
+    res.json({
+        message: "deleted",
+    })
+})

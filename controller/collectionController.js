@@ -31,12 +31,12 @@ const uploadToS3 = (fileData) => {
 
 exports.CreateCollection = asyncHandler(async (req, res, next) => {
     const userid = req.user._id;
-    const { collectiontitle, collectionurl, collectiondescription, ipfshashvalue } = req.body
+    const { collectiontitle, collectionurl, collectiondescription, ipfshashvalue,collectionId } = req.body
 
     if (!userid) {
         return next(new ErrorHandler("user are unauthorization", 401))
     }
-    const Collection = await collectionModel.create({ collectiontitle: collectiontitle, collectionurl: collectionurl, collectiondescription: collectiondescription, collectionIpfsValue: ipfshashvalue, collectionCreater: userid })
+    const Collection = await collectionModel.create({ collectiontitle: collectiontitle, collectionurl: collectionurl, collectiondescription: collectiondescription, collectionIpfsValue: ipfshashvalue, collectionCreater: userid,collectionId })
     res.status(200).json({
         message: "success",
         Collection
@@ -59,8 +59,8 @@ exports.ConvertToUrl =async(req,res)=>{
     res.json({
         data
     })
-    console.log(data);
+   
   } catch (error) {
-    error
+    console.log(error);
   }
 }

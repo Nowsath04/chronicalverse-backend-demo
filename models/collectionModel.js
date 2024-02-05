@@ -19,6 +19,9 @@ const CollectionSchema = mongoose.Schema({
     },
     collectionCreater: {
         type: String,
+    },
+    collectionId:{
+        type: String,
     }
 }, {
     timestamps: true,

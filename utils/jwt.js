@@ -4,15 +4,12 @@ const createJwt = (res, user) => {
     return res.cookie("token", token, {
         path: "/",
         httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 86400), // 1 day
-        sameSite: "none",
-        secure: true,
-      }).status(200).json({
-            success: true,
-            user,
-            token
-        })
-        
+    }).status(200).json({
+        success: true,
+        user,
+        token
+    })
+
 
 }
 
